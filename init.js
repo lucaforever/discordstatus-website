@@ -2,12 +2,14 @@
 var originalh = -0.2;
 var addedh = 5;
 
+// change userId to your user ID
+var userid = "549240664773230632";
+
 // different from updatepresence, adds the username, pfp, status, original activities
 async function init(data) {
     let json = data;
     document.getElementById("name").innerHTML = json.discord_user['username'] + '#' + json.discord_user['discriminator'];
-                                                                                // (change userId to your user ID)
-    document.getElementById("avatar").src = "https://cdn.discordapp.com/avatars/549240664773230632/" + json.discord_user['avatar'];
+    document.getElementById("avatar").src = "https://cdn.discordapp.com/avatars/" + userid + "/" + json.discord_user['avatar'];
     let activities = json.activities;
     let currentdiv = document.getElementById("activities");
     var h = originalh;
@@ -37,8 +39,8 @@ async function init(data) {
                 var activityinfo = ["<strong>" + element['name'] + "</strong>", "<p>" + (element['details'] === undefined ? "<br>" : element['details']) + "</p>", "<p>" + (element['state'] === undefined ? formatTime(diff) + " elapsed" : element['state']) + "</p>"]
                 if(element.assets !== undefined) {
                     div.innerHTML = ('<img draggable="false" alt="" onerror=this.src="https://cdn.discordapp.com/app-assets/' +
-                        element['application_id'] + '/' + element.assets['large_image'] +       // (change userId to your user ID)
-                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/547842383207858178/' +
+                        element['application_id'] + '/' + element.assets['large_image'] +
+                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/' + userid + '/' +
                         element.assets['large_image'] + '.png"> <div class="other">' +
                         "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
                 } else if(element.assets === undefined) {
@@ -62,8 +64,7 @@ async function init(data) {
 }
 
 async function updatepresence() {
-                                    // (change userId to your user ID)
-    var json = await lanyard({userId: "549240664773230632"});
+    var json = await lanyard({userId: userid});
     let activities = json.activities;
     let currentdiv = document.getElementById("activities");
     var h = originalh;
@@ -103,8 +104,8 @@ async function updatepresence() {
                 var activityinfo = ["<strong>" + element['name'] + "</strong>", "<p>" + (element['details'] === undefined ? "<br>" : element['details']) + "</p>", "<p>" + (element['state'] === undefined ? formatTime(diff) + " elapsed" : element['state']) + "</p>"]
                 if(element.assets !== undefined) {
                     div.innerHTML = ('<img draggable="false" alt="" onerror=this.src="https://cdn.discordapp.com/app-assets/' +
-                        element['application_id'] + '/' + element.assets['large_image'] +       // (change userId to your user ID)
-                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/547842383207858178/' +
+                        element['application_id'] + '/' + element.assets['large_image'] +
+                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/'+ userid + '/' +
                         element.assets['large_image'] + '.png"> <div class="other">' +
                         "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
                 } else if(element.assets === undefined) {
@@ -138,17 +139,17 @@ async function updatepresence() {
 }
 
 const onload = async () => {
-    // init all of the original divs and main user details (change userId to your user ID)
+    // init all of the original divs and main user details
     const start = async () => {
-        var json = await lanyard({userId: "549240664773230632"});
+        var json = await lanyard({userId: userid});
         init(json);
     }
 
     start();
     
-    // start the websocket to automatically fetch the new details on presence update (change userId to your user ID)
+    // start the websocket to automatically fetch the new details on presence update
     lanyard({
-        userId: "549240664773230632",
+        userId: userid,
         socket: true,
         onPresenceUpdate: updatepresence
     })
