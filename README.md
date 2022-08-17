@@ -1,2 +1,6 @@
-# discordstatus-website
-See your live Discord status, information and activities right in your browser!
+# Discord Status on your Website
+Using <a href="https://github.com/Phineas/lanyard">Phineas's lanyard</a> websocket and REST API, you can see your live Discord status, information and activities right in your browser!
+
+<a href="https://lucaforever.com/status/"><img src="https://user-images.githubusercontent.com/58527636/184904766-cd30e409-3426-4cc1-9a80-ffab68f323c6.png"/></a>
+
+See a preview of it here: https://lucaforever.com/status
