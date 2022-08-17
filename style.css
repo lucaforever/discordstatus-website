@@ -1,0 +1,135 @@
+// nothing much of mention here, just a heavy amount of badly coded css
+
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    list-style: none;
+}
+
+body {
+    padding: 0%;
+    background: rgb(26, 26, 34);
+    overflow: hidden;
+}
+
+.activity {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 10px;
+    grid-template-columns: max-content;
+    width: 98%;
+    padding: 4px;
+    color: white;
+}
+
+.activity ul {
+    margin-left: -20em;
+    margin-top: 0;
+}
+
+.other ul {
+    margin-left: -2.5em;
+    margin-top: 8px;
+}
+
+.other li {
+    margin-top: -0.8em;
+}
+
+#spotify li:nth-child(1) {
+    color: gainsboro;
+    font-weight: bold;
+}
+
+#spotify li:nth-child(3) {
+    color: coral;
+    font-weight: lighter;
+}
+
+.center {
+    position: absolute;
+    padding: 0%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.discord {
+    display: grid;
+    grid-row: auto;
+    grid-template-rows: max-content;
+    grid-gap: 20px;
+}
+
+#button {
+    margin-left: 29em;
+    margin-top: 1.3em;
+}
+
+.bstyle {
+    width: 6em;
+}
+
+button {
+    width: 10em;
+    height: 2em;
+    border: none;
+    border-radius: 0.5rem;
+    color: white;
+    background: rgb(120, 69, 186);
+}
+
+#userinfo {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+#profile {
+    display: inline-block;
+    padding: 18px;
+    width: 50rem;
+    height: 4.2rem;
+    background: rgb(77, 31, 146);
+    border-radius: 1.5rem;
+}
+
+#activities {
+    display: inline-block;
+    padding: 20px;
+    width: 50rem;
+    height: 5rem;
+    background: rgb(77, 31, 146);
+    border-radius: 1.5rem;
+}
+
+#name {
+    margin-left: 1em;
+    margin-top: 7px;
+    color: white;
+}
+
+#status {        
+    margin-left: -6em;        
+    margin-top: 36px;
+    color: white;
+}
+
+#statusemoji {
+    margin-left: -8em;        
+    margin-top: 36px;
+    color: white;
+}
+
+#avatar {
+    border-radius: 2rem;
+}
+
+strong {
+    font-size: 1em;
+    color: rgb(201, 180, 255);
+}
+
+.activity img {
+    border-radius: 0.6rem;
+}
