@@ -3,7 +3,7 @@ var originalh = -0.2;
 var addedh = 5;
 
 // change userId to your user ID
-var userid = "549240664773230632";
+var userid = "528186118274023424";
 
 // different from updatepresence, adds the username, pfp, status, original activities
 async function init(data) {
