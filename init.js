@@ -8,8 +8,12 @@ var userid = "528186118274023424";
 // different from updatepresence, adds the username, pfp, status, original activities
 async function init(data) {
     let json = data;
-    document.getElementById("name").innerHTML = json.discord_user['username'] + '#' + json.discord_user['discriminator'];
-    document.getElementById("avatar").src = "https://cdn.discordapp.com/avatars/" + userid + "/" + json.discord_user['avatar'];
+    console.log(json);
+    document.getElementById("name").innerHTML = json.discord_user.username + '#' + json.discord_user.discriminator;
+    if(json.discord_user.avatar === null)
+        document.getElementById("avatar").src = "https://cdn.discordapp.com/embed/avatars/0.png";
+    else
+        document.getElementById("avatar").src = "https://cdn.discordapp.com/avatars/" + userid + "/" + json.discord_user['avatar'];
     let activities = json.activities;
     let currentdiv = document.getElementById("activities");
     var h = originalh;
