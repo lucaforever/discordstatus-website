@@ -5,4 +5,4 @@ You can find comments about everything worth noting, and/or that you'd want to m
 
 <a href="https://lucaforever.com/status/"><img src="https://user-images.githubusercontent.com/58527636/184904766-cd30e409-3426-4cc1-9a80-ffab68f323c6.png"/></a>
 
-See a preview of it here: https://lucaforever.com/status
+See a preview of it here: https://lucaforever.github.io/discordstatus-website/
