@@ -1,160 +1,200 @@
-// values to change for the height of the activities rectangle
-var originalh = -0.2;
-var addedh = 5;
+const userid = config.userid;
+let acts = [];
 
-// change userId to your user ID
-var userid = "528186118274023424";
-
-// different from updatepresence, adds the username, pfp, status, original activities
-async function init(data) {
-    let json = data;
-    console.log(json);
-    document.getElementById("name").innerHTML = json.discord_user.username + '#' + json.discord_user.discriminator;
-    if(json.discord_user.avatar === null)
-        document.getElementById("avatar").src = "https://cdn.discordapp.com/embed/avatars/0.png";
-    else
-        document.getElementById("avatar").src = "https://cdn.discordapp.com/avatars/" + userid + "/" + json.discord_user['avatar'];
-    let activities = json.activities;
-    let currentdiv = document.getElementById("activities");
-    var h = originalh;
-    let curractiv = 1;
-    activities.forEach(element => {
-        // if not the status activity, continue
-        if(element['type'] !== 4) {
-            var div = document.createElement("div");
-            div.id = element['name'].split(' ').join('').toLowerCase();
-            div.className = "activity";
-            // if the activity is spotify try to get all of the song info instead of the activity details
-            if(element['name'] === "Spotify") {
-                var songinfo = [json.spotify['song'], json.spotify['artist'].split('; ').join(', '), json.spotify['album']]
-                div.innerHTML = ('<img draggable="false" alt="" width="64" height="64" src="' + json.spotify['album_art_url'] + '"> ' +
-                "<strong>" + element['name'] + "</strong>" + "<ul><li>" + songinfo.join("</li><li>") + "</li></ul>");
-            } else {
-                // time elapsed timer
-                const current_time = element.timestamps['start'],
-                exp_time = Math.floor(Date.now() / 1000)
-                diff = (exp_time * 1000) - current_time,
-                formatTime = (ms) => {
-                    const seconds = Math.floor((ms / 1000) % 60);
-                    const minutes = Math.floor((ms / 1000 / 60) % 60);
-                    const hours = Math.floor((ms / 1000 / 3600) % 60);
-                    return [hours, minutes, seconds].map(v => String(v).padStart(2,0)).join(':');
-                }
-                var activityinfo = ["<strong>" + element['name'] + "</strong>", "<p>" + (element['details'] === undefined ? "<br>" : element['details']) + "</p>", "<p>" + (element['state'] === undefined ? formatTime(diff) + " elapsed" : element['state']) + "</p>"]
-                if(element.assets !== undefined) {
-                    div.innerHTML = ('<img draggable="false" alt="" onerror=this.src="https://cdn.discordapp.com/app-assets/' +
-                        element['application_id'] + '/' + element.assets['large_image'] +
-                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/' + userid + '/' +
-                        element.assets['large_image'] + '.png"> <div class="other">' +
-                        "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
-                } else if(element.assets === undefined) {
-                    div.innerHTML = ('<img draggable="false" alt="" width="64" height="64" src="unknown.png"> <div class="other">' +
-                        "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
-                }
-            }
-
-            h += addedh;
-
-            currentdiv.appendChild(div);
-        } else {
-            // if it is the status, set the src of the emoji img and the status text itself
-            document.getElementById("statusemoji").src = "https://cdn.discordapp.com/emojis/" + element.emoji['id'] + (element.emoji['animated'] ? ".gif" : ".png");
-            document.getElementById("status").innerHTML = element['state'];
-        }
-    });
-
-    // set height of activities rect
-    currentdiv.style.height = h + "rem";
+const getPfpUrl = (id, discrim, avatar) => {
+    if(avatar && avatar !== null) {
+        return `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
+    }
+    if(discrim && discrim !== null && discrim !== "0") {
+        return `https://cdn.discordapp.com/embed/avatars/${parseInt(discrim) % 5}.png`;
+    }
+    return `https://cdn.discordapp.com/embed/avatars/${id.substr(id.length - 1)}.png`;
 }
 
-async function updatepresence() {
-    var json = await lanyard({userId: userid});
-    let activities = json.activities;
-    let currentdiv = document.getElementById("activities");
-    var h = originalh;
-    activities.forEach(element => {
-        // if not the status activity, continue
-        if(element['type'] !== 4) {
-            var activityname = element['name'].split(' ').join('').toLowerCase();
-            var exists = true;
-            if(document.getElementById(activityname) !== null)
-                exists = document.getElementById(activityname)['length'] == 0;
-            let div = document.getElementById(activityname);
+let title = "loading...";
+let titlei = 1;
+let wait = 0;
 
-            // check if the activity already exists, if it does just modify the existing one to not create multiple instances
-            if(exists) {
-                div = document.createElement("div");
-                div.id = activityname;
-                div.className = "activity";
-            }
-            
-            // if the activity is spotify try to get all of the song info instead of the activity details
-            if(element['name'] === "Spotify") {
-                var songinfo = [json.spotify['song'], json.spotify['artist'].split('; ').join(', '), json.spotify['album']]
-                div.innerHTML = '<img draggable="false" alt="" width="64" height="64" src="' +
-                    json.spotify['album_art_url'] + '"> ' +"<strong>" + element['name'] + "</strong>" + "<ul><li>" +
-                    songinfo.join("</li><li>") + '</li></ul>';
-            } else {
-                // time elapsed timer
-                const current_time = element.timestamps['start'],
-                exp_time = Math.floor(Date.now() / 1000)
-                diff = (exp_time * 1000) - current_time,
-                formatTime = (ms) => {
-                    const seconds = Math.floor((ms / 1000) % 60);
-                    const minutes = Math.floor((ms / 1000 / 60) % 60);
-                    const hours = Math.floor((ms / 1000 / 3600) % 60);
-                    return [hours, minutes, seconds].map(v => String(v).padStart(2,0)).join(':');
-                }
-                var activityinfo = ["<strong>" + element['name'] + "</strong>", "<p>" + (element['details'] === undefined ? "<br>" : element['details']) + "</p>", "<p>" + (element['state'] === undefined ? formatTime(diff) + " elapsed" : element['state']) + "</p>"]
-                if(element.assets !== undefined) {
-                    div.innerHTML = ('<img draggable="false" alt="" onerror=this.src="https://cdn.discordapp.com/app-assets/' +
-                        element['application_id'] + '/' + element.assets['large_image'] +
-                        '.png" width="64" height="64" src="https://cdn.discordapp.com/app-assets/'+ userid + '/' +
-                        element.assets['large_image'] + '.png"> <div class="other">' +
-                        "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
-                } else if(element.assets === undefined) {
-                    div.innerHTML = ('<img draggable="false" alt="" width="64" height="64" src="unknown.png"> <div class="other">' +
-                        "<ul><li>" + activityinfo.join("</li><li>") + "</li></ul>" + '</div>');
-                }
-            }
-            h += addedh;
+setInterval(() => {
+  document.title = title.substring(0, titlei);
 
-            if(exists)
-                currentdiv.appendChild(div);
-        }
-    });
-
-    // get the difference of the current activities and the last, mostly just to remove activities that aren't active anymore
-    let names = [];
-    activities.forEach(e => {if(e['type'] !== 4)names.push(e['name'].split(' ').join('').toLowerCase())})
-    var children = [].slice.call(currentdiv.getElementsByClassName('activity'), 0);
-    var childnames = new Array(children.length);
-    var array1Length = children.length;
-    var array2Length = names.length;
-    for (var i = 0; i < array1Length; i++) {
-        var name = children[i].getAttribute("id");    
-        childnames[i] = name;
+  if(titlei == title.length) {
+    if(wait == 3) {
+      titlei = 1;
+      wait = 0;
     }
-    var toremove = childnames.filter(x => !names.includes(x));
-    children.filter(x => toremove.includes(x.id)).forEach(e => {e.remove()});
+    wait++;
+  } else {
+    titlei++;
+  }
+}, 400)
 
-    // set height of activities rect
-    currentdiv.style.height = h + "rem";
-}
-
-const onload = async () => {
-    // init all of the original divs and main user details
-    const start = async () => {
-        var json = await lanyard({userId: userid});
-        init(json);
-    }
-
-    start();
+const load = () => {
+    // backdrop from config
+    const root = document.querySelector(":root");
+    root.style.setProperty("--backdrop-url", `url("${config.profile_backdrop_url}")`);
+    // init avatar in case it doesn't work
+    const avaElem = document.getElementById("avatar");
+    avaElem.src = getPfpUrl(userid, undefined, undefined);
+    // view user button redirect
+    const viewElem = document.getElementById("viewuser");
+    viewElem.href = `https://discord.com/users/${userid}`;
+    console.log("Page init");
     
-    // start the websocket to automatically fetch the new details on presence update
     lanyard({
         userId: userid,
         socket: true,
-        onPresenceUpdate: updatepresence
-    })
+        onPresenceUpdate: update
+    });
+    console.log("Lanyard init");
 }
+
+const update = data => {
+    acts = data.activities;
+    console.log(data);
+    draw(data);
+}
+
+const draw = data => {
+    if(title === "loading...") title = `${data.discord_user.username}'s discord status`; 
+    const displayNameElem = document.getElementById("display");
+    displayNameElem.innerText = data.discord_user.global_name;
+
+    const nameElem = document.getElementById("username");
+    nameElem.innerText = data.discord_user.username;
+
+    const statusElem = document.getElementById("status");
+    
+    const avaElem = document.getElementById("avatar");
+    avaElem.src = getPfpUrl(data.discord_user.id, data.discord_user.discrim, data.discord_user.avatar);
+    
+    const userinfo = document.getElementById("margin");
+    const actsWrapper = document.querySelector(".activities");
+    let toRemove = [];
+    actsWrapper.childNodes.forEach(node => {
+        if(acts.filter(act => act.id == node).length === 0) toRemove.push(node);
+    });
+    toRemove.forEach(node => actsWrapper.removeChild(node));
+
+    acts.forEach(act => {
+
+        if(act.type === 4) {
+            if(act.state && act.emoji) {
+                statusElem.innerText = `${act.emoji.name} ${act.state}`;
+            } else if(!act.emoji) {
+                statusElem.innerText = `${act.state}`;
+            } else if(!act.state) {
+                statusElem.innerText = `${act.emoji.name}`;
+            } else {
+                statusElem.innerText = "";
+            }
+        } else {
+            const isSpotify = act.id === "spotify:1" && data.spotify;
+
+            // <div class="activity" id="00">
+            const actElem = document.createElement("div");
+            actElem.classList.add("activity");
+            actElem.id = act.id;
+
+            // <div class="act-images">
+            const actImageWrapper = document.createElement("act-images");
+            actImageWrapper.classList.add("act-images");
+            
+            // <img class="largeimage" draggable="false" width="64" height="64" src="" />
+            const largeImageElem = document.createElement("img");
+            largeImageElem.classList.add("largeimage");
+            largeImageElem.draggable = false;
+            largeImageElem.width = largeImageElem.height = 64;
+            // spotify
+            if(isSpotify) {
+                largeImageElem.src = data.spotify.album_art_url;
+            } else {
+                // everything after "mp:" is the image id
+                // mp:external/ftBjuYHxeAs2FW1lMnr-_BxOSttEZIc1aAzg_W3nFlM/https/raw.githubusercontent.com/LeonardSSH/vscord/main/assets/icons/js.png
+                
+                if(act.assets) {
+                    if(act.assets.large_image) {
+                        const imageid = act.assets.large_image.substring(3);
+                        largeImageElem.src = `https://media.discordapp.net/${imageid}`;
+                    }
+                } else {
+                    // no easy way of getting the icons from the discord api
+                    largeImageElem.src = `https://dcdn.dstn.to/app-icons/${act.application_id}`;
+                }
+            }
+            actImageWrapper.appendChild(largeImageElem);
+
+            if(act.assets || isSpotify) {
+                if(act.assets.small_image || isSpotify) {
+                    // <img class="smallimage" draggable="false" width="32" height="32" src="" />
+                    const smallImageElem = document.createElement("img");
+                    smallImageElem.classList.add("smallimage");
+                    smallImageElem.draggable = false;
+                    smallImageElem.width = smallImageElem.height = 32;
+                    if(isSpotify) {
+                        smallImageElem.src = "https://developer.spotify.com/images/guidelines/design/icon3@2x.png";
+                    } else {
+                        const imageid = act.assets.small_image.substring(3);
+                        smallImageElem.src = `https://media.discordapp.net/${imageid}`;
+                    }
+                    actImageWrapper.appendChild(smallImageElem);
+                }
+            }
+
+            // add class="act-images" to class="activity"
+            actElem.appendChild(actImageWrapper);
+
+            // <span class="act-name">placeholder name</span>
+            const nameSpan = document.createElement("span");
+            nameSpan.classList.add("act-name");
+            // <span class="act-details">placeholder details</span>
+            const detailsSpan = document.createElement("span");
+            detailsSpan.classList.add("act-details");
+            // <span class="act-state">placeholder state</span>
+            const stateSpan = document.createElement("span");
+            stateSpan.classList.add("act-state");
+            
+            if(isSpotify) {
+                nameSpan.innerText = `${data.spotify.song}`;
+                detailsSpan.innerText = `on ${data.spotify.album}`;
+                stateSpan.innerText = `by ${data.spotify.artist}`;
+            } else {
+                nameSpan.innerText = act.name ? act.name : "";
+                const start = act.timestamps.start;
+                const exp_time = Math.floor(Date.now() / 1000);
+                const diff = (exp_time * 1000) - start;
+                const timestamp = formatTime(diff);
+                detailsSpan.innerText = act.details ? act.details : timestamp;
+                stateSpan.innerText = act.state ? act.state : "";
+            }
+            
+            actElem.appendChild(nameSpan);
+            actElem.appendChild(detailsSpan);
+            actElem.appendChild(stateSpan);
+
+            // add class="activity" to activities
+            actsWrapper.appendChild(actElem);
+        }
+    });
+
+    userinfo.style.marginBottom = actsWrapper.children.length === 0 ? "0" : "1em";
+}
+
+const formatTime = (ms) => {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / 1000 / 60) % 60);
+    const hours = Math.floor((ms / 1000 / 3600) % 60);
+
+    if(hours > 0) {
+        return `for ${hours} hour(s)`;
+    }
+    if(minutes > 0) {
+        return `for ${minutes} minute(s)`;
+    }
+    if(seconds > 0) {
+        return `for ${seconds} second(s)`;
+    }
+}
+
+// start the websocket to automatically fetch the new details on presence update
+window.addEventListener("load", load);

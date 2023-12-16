@@ -1,135 +1,142 @@
-// nothing much of mention here, just a heavy amount of badly coded css
-
 * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-clr: rgb(26, 26, 34);
+    --fg-clr: rgb(17, 17, 22);
+    --accent-clr: rgb(78, 46, 121);
+    --text-clr: white;
+    --hidden-text-clr: rgb(170, 170, 170);
+    --border-radius: 0.45rem;
+    --backdrop-url: url("");
+    
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    list-style: none;
+    background: var(--bg-clr);
+    color: var(--text-clr);
 }
 
 body {
-    padding: 0%;
-    background: rgb(26, 26, 34);
-    overflow: hidden;
+    height: 100vh;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+
+#avatar {
+    border-radius: 50%;
+}
+
+.display {
+    min-width: 35vw;
+    padding: 1.75em;
+    background: var(--fg-clr);
+    border-radius: var(--border-radius);
+}
+
+.userinfo {
+    background-image:
+        linear-gradient(
+            rgb(0, 0, 0, 0.7),
+            rgb(0, 0, 0, 0.7)
+        ),
+        var(--backdrop-url);
+    background-size: cover;
+    background-position: 50% 50%;
+    border-radius: var(--border-radius);
+    padding: 1em 1em;
+
+    display: grid;
+    grid-template-columns: min-content 1fr max-content;
+    gap: 0 12px;
+    align-items: center;
+    grid-template-areas:
+        "avatar display view"
+        "avatar username view"
+        "avatar status view";
+}
+
+#avatar {
+    grid-area: avatar;
+}
+#username {
+    color: var(--hidden-text-clr);
+    grid-area: username;
+}
+#display {
+    grid-area: display;
+}
+#status {
+    grid-area: status;
+}
+#viewuser {
+    grid-area: view;
 }
 
 .activity {
     display: grid;
-    grid-auto-flow: column;
-    grid-column-gap: 10px;
-    grid-template-columns: max-content;
-    width: 98%;
-    padding: 4px;
-    color: white;
-}
-
-.activity ul {
-    margin-left: -20em;
-    margin-top: 0;
-}
-
-.other ul {
-    margin-left: -2.5em;
-    margin-top: 8px;
-}
-
-.other li {
-    margin-top: -0.8em;
-}
-
-#spotify li:nth-child(1) {
-    color: gainsboro;
-    font-weight: bold;
-}
-
-#spotify li:nth-child(3) {
-    color: coral;
-    font-weight: lighter;
-}
-
-.center {
-    position: absolute;
-    padding: 0%;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: min-content min-content min-content;
+    gap: 0px 12px;
     align-items: center;
+    grid-template-areas: 
+        "images name"
+        "images details"
+        "images state";
 }
 
-.discord {
+.act-name {
+    font-weight: 700;
+    grid-area: name;
+}
+.act-details {
+    grid-area: details;
+}
+.act-state {
+    grid-area: state;
+}
+
+.act-images {
+    position: relative;
+    grid-area: images;
+}
+
+.largeimage {
+    border-radius: var(--border-radius);
+}
+
+.smallimage {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+
+    border-radius: 50%;
+    border: 4px solid var(--fg-clr);
+}
+
+.activities {
     display: grid;
-    grid-row: auto;
-    grid-template-rows: max-content;
-    grid-gap: 20px;
+    gap: 16px 0;
 }
 
-#button {
-    margin-left: 29em;
-    margin-top: 1.3em;
+.return {
+    position: absolute;
+    top: 8px;
+    left: 8px;
 }
 
-.bstyle {
-    width: 6em;
+a {
+    text-decoration: none;
 }
 
-button {
-    width: 10em;
-    height: 2em;
-    border: none;
-    border-radius: 0.5rem;
-    color: white;
-    background: rgb(120, 69, 186);
-}
+.button {
+    cursor: pointer;
+    padding: 4px 8px;
 
-#userinfo {
-    display: grid;
-    grid-auto-flow: column;
-}
-
-#profile {
-    display: inline-block;
-    padding: 18px;
-    width: 50rem;
-    height: 4.2rem;
-    background: rgb(77, 31, 146);
-    border-radius: 1.5rem;
-}
-
-#activities {
-    display: inline-block;
-    padding: 20px;
-    width: 50rem;
-    height: 5rem;
-    background: rgb(77, 31, 146);
-    border-radius: 1.5rem;
-}
-
-#name {
-    margin-left: 1em;
-    margin-top: 7px;
-    color: white;
-}
-
-#status {        
-    margin-left: -6em;        
-    margin-top: 36px;
-    color: white;
-}
-
-#statusemoji {
-    margin-left: -8em;        
-    margin-top: 36px;
-    color: white;
-}
-
-#avatar {
-    border-radius: 2rem;
-}
-
-strong {
-    font-size: 1em;
-    color: rgb(201, 180, 255);
-}
-
-.activity img {
-    border-radius: 0.6rem;
+    border: transparent;
+    border-radius: var(--border-radius);
+    color: var(--text-clr);
+    background: var(--accent-clr);
 }
