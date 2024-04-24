@@ -50,8 +50,7 @@ const load = () => {
 }
 
 const update = data => {
-    acts = data.activities;
-    console.log(data);
+    acts = data.activities;
     draw(data);
 }
 
