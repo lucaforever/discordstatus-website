@@ -50,7 +50,8 @@ const load = () => {
 }
 
 const update = data => {
-    acts = data.activities;
+    acts = data.activities;
+    console.log(data);
     draw(data);
 }
 
@@ -63,6 +64,8 @@ const draw = data => {
     nameElem.innerText = data.discord_user.username;
 
     const statusElem = document.getElementById("status");
+    const statusEmojiElem = document.getElementById("status-emoji");
+    const statusTextElem = document.getElementById("status-text");
     
     const avaElem = document.getElementById("avatar");
     avaElem.src = getPfpUrl(data.discord_user.id, data.discord_user.discrim, data.discord_user.avatar);
@@ -76,14 +79,18 @@ const draw = data => {
     toRemove.forEach(node => actsWrapper.removeChild(node));
 
     acts.forEach(act => {
-
         if(act.type === 4) {
-            if(act.state && act.emoji) {
-                statusElem.innerText = `${act.emoji.name} ${act.state}`;
-            } else if(!act.emoji) {
-                statusElem.innerText = `${act.state}`;
-            } else if(!act.state) {
-                statusElem.innerText = `${act.emoji.name}`;
+            if(act.state || act.emoji) {
+                statusTextElem.innerText = `${act.state ? act.state : ""}`;
+                if(act.emoji) {
+                    if(act.emoji.id) {
+                        statusEmojiElem.src = `https://cdn.discordapp.com/emojis/${act.emoji.id}`;
+                        statusEmojiElem.alt = " ";
+                    } else {
+                        statusEmojiElem.src = "";
+                        statusEmojiElem.alt = act.emoji.name;
+                    }
+                }
             } else {
                 statusElem.innerText = "";
             }
@@ -159,12 +166,14 @@ const draw = data => {
                 stateSpan.innerText = `by ${data.spotify.artist}`;
             } else {
                 nameSpan.innerText = act.name ? act.name : "";
-                const start = act.timestamps.start;
-                const exp_time = Math.floor(Date.now() / 1000);
-                const diff = (exp_time * 1000) - start;
-                const timestamp = formatTime(diff);
-                detailsSpan.innerText = act.details ? act.details : timestamp;
-                stateSpan.innerText = act.state ? act.state : "";
+                if(act.timestamps) {
+                    const start = act.timestamps.start;
+                    const exp_time = Math.floor(Date.now() / 1000);
+                    const diff = (exp_time * 1000) - start;
+                    const timestamp = formatTime(diff);
+                    detailsSpan.innerText = act.details ? act.details : timestamp;
+                    stateSpan.innerText = act.state ? act.state : "";
+                }
             }
             
             actElem.appendChild(nameSpan);
